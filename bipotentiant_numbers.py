@@ -2,12 +2,18 @@
 
 from __future__ import annotations
 
-from typing import List
 import sys
+from typing import List
 
 
 def digit_powers(n: int) -> List[int]:
-    """Return each digit power used in the bipotentiant definition."""
+    """Return the powered digits used in the bipotentiant definition.
+
+    The returned list is ordered from right to left: the units digit is raised
+    to the 1st power, the tens digit to the 2nd power, and so on. ``n`` must
+    be a positive integer. Zero digits contribute ``0`` to this list, which
+    also makes the product term ``P(n)`` equal to ``0``.
+    """
     if n <= 0:
         raise ValueError("n must be a positive integer")
 
@@ -15,7 +21,13 @@ def digit_powers(n: int) -> List[int]:
 
 
 def is_bipotentiant(n: int) -> bool:
-    """Return whether n is bipotentiant."""
+    """Return whether ``n`` satisfies ``n == S(n) + P(n)``.
+
+    Non-positive inputs are treated as not bipotentiant and return ``False``.
+    """
+    if n <= 0:
+        return False
+
     powers = digit_powers(n)
     total = sum(powers)
 
@@ -35,6 +47,7 @@ def find_bipotentiant_numbers(limit: int) -> List[int]:
 
 
 def main(argv: List[str] | None = None) -> int:
+    """Print bipotentiant numbers up to the requested limit and return 0."""
     args = list(sys.argv[1:] if argv is None else argv)
     limit = int(args[0]) if args else 1000
 

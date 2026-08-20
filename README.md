@@ -26,5 +26,5 @@ For example, `19` is bipotentiant because:
 Run the module directly to list all bipotentiant numbers up to a limit:
 
 ```bash
-python /home/runner/work/bipotentiant-numbers/bipotentiant-numbers/bipotentiant_numbers.py 1000
+python bipotentiant_numbers.py 1000
 ```
