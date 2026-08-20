@@ -21,6 +21,9 @@ For example, `19` is bipotentiant because:
 
 `19 = (9^1 + 1^2) + (9^1 × 1^2) = 10 + 9`
 
+In base 10, the first six bipotentiant numbers (including `0`) are:
+`0, 19, 24, 51, 1343, 1721`.
+
 ## Usage
 
 Run the module directly to list all bipotentiant numbers up to a limit:
