@@ -63,6 +63,10 @@ Then \(P(n)=0\), so the identity above gives
 \[
 0=\sum_{j=1}^{k-1} d_j\bigl(10^j-d_j^j\bigr).
 \]
+Also, a positive one-digit number (\(k=1\)) cannot be bipotentiant, because
+\(n=d_0\), \(S(n)=d_0\), \(P(n)=d_0\), hence \(n=S(n)+P(n)\) would force
+\(d_0=2d_0\), impossible for \(d_0>0\). Therefore any positive solution has \(k\ge 2\), so the sum above is non-empty.
+
 Each summand is non-negative; and if \(d_j\in\{1,\dots,9\}\), then
 \[
 d_j\bigl(10^j-d_j^j\bigr)>0.
