@@ -71,7 +71,11 @@ Each summand is non-negative; and if \(d_j\in\{1,\dots,9\}\), then
 \[
 d_j\bigl(10^j-d_j^j\bigr)>0.
 \]
-Indeed, \(d_j\le 9<10\) implies \(d_j^j<10^j\) for every \(j\ge 1\).
+Indeed, for \(j\ge 1\) and \(d_j\in\{1,\dots,9\}\),
+\[
+d_j^j \le 9^j < 10^j,
+\]
+so \(10^j-d_j^j>0\).
 
 Since \(n>0\), the leading digit \(d_{k-1}\ge 1\), so at least one summand is strictly positive, contradiction.
 
@@ -97,4 +101,11 @@ the only base-10 bipotentiant numbers in the proven interval are
 \{0,\ 19,\ 24,\ 51,\ 1343,\ 1721\}.
 \]
 Additionally, exhaustive scanning up to \(20{,}000{,}000\) yields no further examples.
+This was obtained with the project code via:
+
+```python
+from bipotentiant_numbers import is_bipotentiant
+print([n for n in range(1, 20_000_001) if is_bipotentiant(n)])
+# [19, 24, 51, 1343, 1721]
+```
 \(\blacksquare\)
