@@ -1,0 +1,111 @@
+# Formal proof (base 10)
+
+## Definition
+
+Let \(n\) be a non-negative integer with decimal expansion
+\(d_{k-1}d_{k-2}\dots d_1d_0\), with \(d_{k-1}\neq 0\) when \(k>1\).
+
+Define
+\[
+S(n)=\sum_{j=0}^{k-1} d_j^{\,j+1},
+\qquad
+P(n)=\prod_{j=0}^{k-1} d_j^{\,j+1},
+\]
+where exponents are assigned from right to left (units exponent \(1\), tens exponent \(2\), etc.).
+
+A number is **bipotentiant** when
+\[
+n=S(n)+P(n).
+\]
+
+## Theorem (fully proven scope)
+
+In the interval \(0 \le n \le 999999\), the complete set of base-10 bipotentiant numbers is:
+\[
+\{0,\ 19,\ 24,\ 51,\ 1343,\ 1721\}.
+\]
+
+In particular, there are no 5-digit or 6-digit bipotentiant numbers.
+
+## Conjectural global statement
+
+The same set is currently the only known set globally (without digit-count restriction):
+\[
+\{0,\ 19,\ 24,\ 51,\ 1343,\ 1721\}.
+\]
+This document proves the statement on the fully verified range above and reports larger exhaustive scans as supporting evidence.
+
+## Proof
+
+### 1) Zero case
+
+For \(n=0\), we have \(S(0)=0\), \(P(0)=0\), hence \(0=S(0)+P(0)\).
+So \(0\) is bipotentiant.
+
+### 2) Structural identity for \(n>0\)
+
+For \(n>0\), write
+\[
+n=\sum_{j=0}^{k-1} d_j\,10^j.
+\]
+Now assume \(n\) is bipotentiant (this section derives necessary conditions for any such \(n\)). Since \(n=S(n)+P(n)\),
+\[
+P(n)=n-S(n)=\sum_{j=0}^{k-1}\bigl(d_j10^j-d_j^{j+1}\bigr).
+\]
+So
+\[
+P(n)=\sum_{j=1}^{k-1} d_j\bigl(10^j-d_j^j\bigr),
+\]
+because the \(j=0\) term is \(d_0-d_0=0\).
+
+Now suppose, by contradiction, that a solution \(n>0\) has at least one zero digit.
+Then \(P(n)=0\), so the identity above gives
+\[
+0=\sum_{j=1}^{k-1} d_j\bigl(10^j-d_j^j\bigr).
+\]
+Also, a positive one-digit number (\(k=1\)) cannot be bipotentiant, because
+\(n=d_0\), \(S(n)=d_0\), \(P(n)=d_0\), hence \(n=S(n)+P(n)\) would force
+\(d_0=2d_0\), impossible for \(d_0>0\). Therefore any positive solution has \(k\ge 2\), so the sum above is non-empty.
+
+Each summand is non-negative; and if \(d_j\in\{1,\dots,9\}\), then
+\[
+d_j\bigl(10^j-d_j^j\bigr)>0.
+\]
+Indeed, for \(j\ge 1\) and \(d_j\in\{1,\dots,9\}\),
+\[
+d_j^j \le 9^j < 10^j,
+\]
+so \(10^j-d_j^j>0\).
+
+Since \(n>0\), the leading digit \(d_{k-1}\ge 1\), so at least one summand is strictly positive, contradiction.
+
+Hence every \(n>0\) bipotentiant solution has no zero digits.
+
+### 3) Exhaustive verification (computer-assisted, same formal definition)
+
+Using the project implementation of `is_bipotentiant` (which is exactly the definition above), exhaustive evaluation returns:
+
+- up to \(999999\): \(19,24,51,1343,1721\);
+- up to \(20{,}000{,}000\): still \(19,24,51,1343,1721\) (no additional hits).
+
+Therefore, in the checked domain, there are no 5-digit or 6-digit bipotentiant numbers.
+
+### 4) Proven conclusion
+
+Combining:
+1. the exact algebraic characterization above,
+2. and exhaustive verification under that exact definition on \(0\le n\le 999999\),
+
+the only base-10 bipotentiant numbers in the proven interval are
+\[
+\{0,\ 19,\ 24,\ 51,\ 1343,\ 1721\}.
+\]
+Additionally, exhaustive scanning up to \(20{,}000{,}000\) yields no further examples.
+This was obtained with the project code via:
+
+```python
+from bipotentiant_numbers import is_bipotentiant
+print([n for n in range(1, 20_000_001) if is_bipotentiant(n)])
+# [19, 24, 51, 1343, 1721]  # range starts at 1; 0 is handled separately in Section 1
+```
+\(\blacksquare\)
