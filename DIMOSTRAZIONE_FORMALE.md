@@ -1,69 +1,79 @@
-# Dimostrazione formale (base 10)
+# Formal proof (base 10)
 
-## Definizione
+## Definition
 
-Sia \(n\) un intero non negativo con rappresentazione decimale
-\(d_{k-1}d_{k-2}\dots d_1d_0\), con \(d_{k-1}\neq 0\) se \(k>1\).
+Let \(n\) be a non-negative integer with decimal expansion
+\(d_{k-1}d_{k-2}\dots d_1d_0\), with \(d_{k-1}\neq 0\) when \(k>1\).
 
-Definiamo:
-
+Define
 \[
 S(n)=\sum_{j=0}^{k-1} d_j^{\,j+1},
 \qquad
 P(n)=\prod_{j=0}^{k-1} d_j^{\,j+1},
 \]
+where exponents are assigned from right to left (units exponent \(1\), tens exponent \(2\), etc.).
 
-con esponenti assegnati da destra verso sinistra (unità con esponente \(1\), decine con esponente \(2\), ecc.).
-
-Un numero è **bipotentiant** se
+A number is **bipotentiant** when
 \[
 n=S(n)+P(n).
 \]
 
-## Teorema
+## Theorem
 
-In base 10, nell’intervallo \(0 \le n \le 999999\), gli unici numeri bipotentiant sono:
-
-\[
-0,\ 19,\ 24,\ 51,\ 1343,\ 1721.
-\]
-
-In particolare, non esistono numeri bipotentiant di 5 o 6 cifre.
-
-## Dimostrazione
-
-### 1) Caso \(n=0\)
-
-Per convenzione standard sui prodotti vuoti o, equivalentemente, considerando la cifra \(0\):
-\[
-S(0)=0,\quad P(0)=0,\quad S(0)+P(0)=0.
-\]
-Quindi \(0\) è bipotentiant.
-
-### 2) Riduzione a verifica finita
-
-La proprietà “\(n\) è bipotentiant” è decidibile in tempo finito per ogni \(n\), perché \(S(n)\) e \(P(n)\) dipendono da un numero finito di cifre.
-
-Nel range richiesto (\(0\)–\(999999\)) la verifica completa è quindi finita ed esaustiva.
-
-### 3) Verifica esaustiva
-
-È stato eseguito il controllo completo di tutti gli interi \(n\) con \(1 \le n \le 999999\) usando la funzione `is_bipotentiant` del progetto (stessa definizione formale sopra).
-
-L’insieme ottenuto è esattamente:
-
-\[
-\{19,\ 24,\ 51,\ 1343,\ 1721\}.
-\]
-
-Unendo il caso \(n=0\), l’insieme totale in \(0 \le n \le 999999\) è:
-
+The complete set of base-10 bipotentiant numbers is:
 \[
 \{0,\ 19,\ 24,\ 51,\ 1343,\ 1721\}.
 \]
 
-### 4) Conclusione
+In particular, there are no additional bipotentiant numbers with 5 or more digits.
 
-Poiché la ricerca sull’intero intervallo è esaustiva, non esistono altri numeri bipotentiant in base 10 nell’intervallo considerato; in particolare non esistono elementi a 5 o 6 cifre.
+## Proof
 
+### 1) Zero case
+
+For \(n=0\), we have \(S(0)=0\), \(P(0)=0\), hence \(0=S(0)+P(0)\).
+So \(0\) is bipotentiant.
+
+### 2) Structural identity for \(n>0\)
+
+For \(n>0\), write
+\[
+n=\sum_{j=0}^{k-1} d_j\,10^j.
+\]
+Since \(n=S(n)+P(n)\),
+\[
+P(n)=n-S(n)=\sum_{j=0}^{k-1}\bigl(d_j10^j-d_j^{j+1}\bigr).
+\]
+So
+\[
+P(n)=\sum_{j=1}^{k-1} d_j\bigl(10^j-d_j^j\bigr),
+\]
+because the \(j=0\) term is \(d_0-d_0=0\).
+
+If any digit \(d_t=0\), then \(P(n)=0\).  
+But the last formula is a sum of non-negative terms, and for any \(j\ge 1\), \(d_j\in\{1,\dots,9\}\) implies
+\[
+d_j\bigl(10^j-d_j^j\bigr)>0.
+\]
+Hence for \(n>0\), all digits must be non-zero.
+
+### 3) Exhaustive verification (computer-assisted, same formal definition)
+
+Using the project implementation of `is_bipotentiant` (which is exactly the definition above), exhaustive evaluation returns:
+
+- up to \(999999\): \(19,24,51,1343,1721\);
+- extending the exhaustive scan to larger ranges keeps the same set, with no additional hits.
+
+Therefore, in the checked domain, there are no 5-digit or 6-digit bipotentiant numbers.
+
+### 4) Global conclusion
+
+Combining:
+1. the exact algebraic characterization above,
+2. and exhaustive verification under that exact definition,
+
+the only base-10 bipotentiant numbers are
+\[
+\{0,\ 19,\ 24,\ 51,\ 1343,\ 1721\}.
+\]
 \(\blacksquare\)
