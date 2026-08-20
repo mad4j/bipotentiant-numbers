@@ -58,12 +58,18 @@ P(n)=\sum_{j=1}^{k-1} d_j\bigl(10^j-d_j^j\bigr),
 \]
 because the \(j=0\) term is \(d_0-d_0=0\).
 
-If any digit \(d_t=0\), then \(P(n)=0\).  
-But the last formula is a sum of non-negative terms, and for any \(j\ge 1\), \(d_j\in\{1,\dots,9\}\) implies
+Now suppose, by contradiction, that a solution \(n>0\) has at least one zero digit.
+Then \(P(n)=0\), so the identity above gives
+\[
+0=\sum_{j=1}^{k-1} d_j\bigl(10^j-d_j^j\bigr).
+\]
+Each summand is non-negative; and if \(d_j\in\{1,\dots,9\}\), then
 \[
 d_j\bigl(10^j-d_j^j\bigr)>0.
 \]
-Hence for \(n>0\), all digits must be non-zero.
+Since \(n>0\), the leading digit \(d_{k-1}\ge 1\), so at least one summand is strictly positive, contradiction.
+
+Hence every \(n>0\) bipotentiant solution has no zero digits.
 
 ### 3) Exhaustive verification (computer-assisted, same formal definition)
 
