@@ -71,6 +71,8 @@ Each summand is non-negative; and if \(d_j\in\{1,\dots,9\}\), then
 \[
 d_j\bigl(10^j-d_j^j\bigr)>0.
 \]
+Indeed, \(d_j\le 9<10\) implies \(d_j^j<10^j\) for every \(j\ge 1\).
+
 Since \(n>0\), the leading digit \(d_{k-1}\ge 1\), so at least one summand is strictly positive, contradiction.
 
 Hence every \(n>0\) bipotentiant solution has no zero digits.
