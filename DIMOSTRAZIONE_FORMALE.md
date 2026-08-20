@@ -106,6 +106,6 @@ This was obtained with the project code via:
 ```python
 from bipotentiant_numbers import is_bipotentiant
 print([n for n in range(1, 20_000_001) if is_bipotentiant(n)])
-# [19, 24, 51, 1343, 1721]  # positive values only; add 0 separately
+# [19, 24, 51, 1343, 1721]  # range starts at 1; 0 is handled separately in Section 1
 ```
 \(\blacksquare\)
