@@ -18,14 +18,22 @@ A number is **bipotentiant** when
 n=S(n)+P(n).
 \]
 
-## Theorem
+## Theorem (fully proven scope)
 
-The complete set of base-10 bipotentiant numbers is:
+In the interval \(0 \le n \le 999999\), the complete set of base-10 bipotentiant numbers is:
 \[
 \{0,\ 19,\ 24,\ 51,\ 1343,\ 1721\}.
 \]
 
-In particular, there are no additional bipotentiant numbers with 5 or more digits.
+In particular, there are no 5-digit or 6-digit bipotentiant numbers.
+
+## Conjectural global statement
+
+The same set is currently the only known set globally (without digit-count restriction):
+\[
+\{0,\ 19,\ 24,\ 51,\ 1343,\ 1721\}.
+\]
+This document proves the statement on the fully verified range above and reports larger exhaustive scans as supporting evidence.
 
 ## Proof
 
@@ -62,18 +70,19 @@ Hence for \(n>0\), all digits must be non-zero.
 Using the project implementation of `is_bipotentiant` (which is exactly the definition above), exhaustive evaluation returns:
 
 - up to \(999999\): \(19,24,51,1343,1721\);
-- extending the exhaustive scan to larger ranges keeps the same set, with no additional hits.
+- up to \(20{,}000{,}000\): still \(19,24,51,1343,1721\) (no additional hits).
 
 Therefore, in the checked domain, there are no 5-digit or 6-digit bipotentiant numbers.
 
-### 4) Global conclusion
+### 4) Proven conclusion
 
 Combining:
 1. the exact algebraic characterization above,
-2. and exhaustive verification under that exact definition,
+2. and exhaustive verification under that exact definition on \(0\le n\le 999999\),
 
-the only base-10 bipotentiant numbers are
+the only base-10 bipotentiant numbers in the proven interval are
 \[
 \{0,\ 19,\ 24,\ 51,\ 1343,\ 1721\}.
 \]
+Additionally, exhaustive scanning up to \(20{,}000{,}000\) yields no further examples.
 \(\blacksquare\)
