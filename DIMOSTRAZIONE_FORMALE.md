@@ -48,7 +48,7 @@ For \(n>0\), write
 \[
 n=\sum_{j=0}^{k-1} d_j\,10^j.
 \]
-Since \(n=S(n)+P(n)\),
+Now assume \(n\) is bipotentiant (this section derives necessary conditions for any such \(n\)). Since \(n=S(n)+P(n)\),
 \[
 P(n)=n-S(n)=\sum_{j=0}^{k-1}\bigl(d_j10^j-d_j^{j+1}\bigr).
 \]
@@ -106,6 +106,6 @@ This was obtained with the project code via:
 ```python
 from bipotentiant_numbers import is_bipotentiant
 print([n for n in range(1, 20_000_001) if is_bipotentiant(n)])
-# [19, 24, 51, 1343, 1721]
+# [19, 24, 51, 1343, 1721]  # positive values only; add 0 separately
 ```
 \(\blacksquare\)
