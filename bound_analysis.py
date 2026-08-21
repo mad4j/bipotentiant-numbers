@@ -222,7 +222,7 @@ def main() -> None:
         type=int,
         default=18,
         metavar="K",
-        help="Upper limit for pruned search (default: 14; warning: >14 is slow)",
+        help="Upper limit for pruned search (default: 18; warning: >18 is slow)",
     )
     args = parser.parse_args()
 

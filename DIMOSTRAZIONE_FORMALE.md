@@ -172,7 +172,7 @@ python bound_analysis.py --lemma52
 ### 6) Bound on the number of non-1 digits (Lemma 5.3)
 
 **Lemma 5.3 (non-1-digit count bound).** In any \(k\)-digit bipotentiant number the
-number of digits equal to \(1\) is at most
+number of digits **not** equal to \(1\) is at most
 \[
 m_{\max}(k)=\left\lfloor\frac{-1+\sqrt{1+8k/\log_{10}2}}{2}\right\rfloor.
 \]
