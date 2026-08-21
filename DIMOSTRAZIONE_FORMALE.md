@@ -155,8 +155,8 @@ The fixed-point equation \(n=S(n)+P(n)\) becomes
 \[
 R_k+(d-1)\cdot 10^{j_0}=(k-1)+2d^{j_0+1}.
 \]
-Since \(d\ge 1\) and \(10^{j_0}\ge 1\), the left-hand side satisfies
-\(n\ge R_k\). We bound the right-hand side:
+Since \(d\ge 2\) by hypothesis, \((d-1)\cdot 10^{j_0}\ge 0\), so the
+left-hand side satisfies \(n\ge R_k\). We bound the right-hand side:
 \[
 (k-1)+2d^{j_0+1}\le (k-1)+2\cdot 9^k,
 \]
