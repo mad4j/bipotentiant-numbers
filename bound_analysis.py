@@ -20,9 +20,11 @@ Three complementary approaches are implemented:
 Usage::
 
     python bound_analysis.py            # runs all analyses
-    python bound_analysis.py --search   # pruned search only (k=2..14)
+    python bound_analysis.py --search   # pruned search only (k=2..18)
     python bound_analysis.py --bounds   # bound table only
     python bound_analysis.py --lemma    # one-non-1-digit lemma only
+    python bound_analysis.py --lemma52  # all-non-1-digits lemma (Lemma 5.2)
+    python bound_analysis.py --lemma53  # non-1-digit count bound (Lemma 5.3)
 """
 
 from __future__ import annotations
@@ -146,24 +148,85 @@ def one_non1_lemma_table(k_max: int = 35) -> None:
 
 
 # ---------------------------------------------------------------------------
+# 4. All-non-1-digit lemma (Lemma 5.2)
+# ---------------------------------------------------------------------------
+
+def all_non1_lemma_table(k_max: int = 10) -> None:
+    """Print the minimum product for all-non-1-digit tuples vs 10^k.
+
+    When min_P = 2^{k(k+1)/2} >= 10^k, every tuple with all digits >= 2
+    violates the product constraint, so no solution can exist (Lemma 5.2).
+    """
+    import math as _math
+    print(f"{'k':>3}  {'k(k+1)/2':>10}  {'log10(min_P)':>14}  {'log10(10^k)':>12}  {'impossible':>11}")
+    for k in range(1, k_max + 1):
+        exp = k * (k + 1) // 2
+        log_min_p = exp * _math.log10(2)
+        impossible = log_min_p >= k
+        print(f"{k:>3}  {exp:>10}  {log_min_p:>14.4f}  {k:>12}  {str(impossible):>11}")
+
+
+# ---------------------------------------------------------------------------
+# 5. Non-1-digit count bound (Lemma 5.3)
+# ---------------------------------------------------------------------------
+
+def non1_count_bound_table(k_max: int = 30) -> None:
+    """Print the maximum number of non-1 digits allowed by the product constraint.
+
+    For m non-1 digits (each >= 2) the minimum product contribution is
+    2^{m(m+1)/2}.  The constraint P < 10^k then forces
+    m(m+1)/2 * log10(2) < k, giving m < floor((-1 + sqrt(1 + 8k/log10(2)))/2).
+    """
+    import math as _math
+    log10_2 = _math.log10(2)
+    print(f"{'k':>3}  {'max non-1 digits m':>20}  {'m*log10(2) bound':>18}")
+    for k in range(1, k_max + 1):
+        # largest m with m(m+1)/2 * log10_2 < k
+        m = int((-1 + _math.sqrt(1 + 8 * k / log10_2)) / 2)
+        # verify and correct for rounding
+        while (m + 1) * (m + 2) / 2 * log10_2 < k:
+            m += 1
+        while m > 0 and m * (m + 1) / 2 * log10_2 >= k:
+            m -= 1
+        print(f"{k:>3}  {m:>20}  {m * (m + 1) / 2 * log10_2:>18.4f}")
+
+
+def one_non1_lemma_table(k_max: int = 35) -> None:
+    """Print the ratio (10^k−1)/9  vs  (k−1)+2·9^k for each k.
+
+    When the ratio exceeds 1, the 'one non-1 digit' fixed-point equation
+    has no solution (Lemma 5.1 in DIMOSTRAZIONE_FORMALE.md).
+    """
+    print(f"{'k':>3}  {'repunit_k':>32}  {'max_rhs':>32}  {'ratio':>8}  {'proven':>7}")
+    for k in range(1, k_max + 1):
+        repunit = (10**k - 1) // 9
+        max_rhs = (k - 1) + 2 * 9**k
+        ratio = repunit / max_rhs
+        proven = ratio > 1
+        print(f"{k:>3}  {repunit:>32}  {max_rhs:>32}  {ratio:>8.4f}  {str(proven):>7}")
+
+
+# ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--search", action="store_true", help="Run pruned search k=2..14")
+    parser.add_argument("--search", action="store_true", help="Run pruned search k=2..18")
     parser.add_argument("--bounds", action="store_true", help="Print bound table")
     parser.add_argument("--lemma", action="store_true", help="Print one-non-1-digit lemma table")
+    parser.add_argument("--lemma52", action="store_true", help="Print all-non-1-digits impossibility table (Lemma 5.2)")
+    parser.add_argument("--lemma53", action="store_true", help="Print non-1-digit count bound table (Lemma 5.3)")
     parser.add_argument(
         "--k-max-search",
         type=int,
-        default=14,
+        default=18,
         metavar="K",
-        help="Upper limit for pruned search (default: 14; warning: >14 is slow)",
+        help="Upper limit for pruned search (default: 18; warning: >18 is slow)",
     )
     args = parser.parse_args()
 
-    run_all = not (args.search or args.bounds or args.lemma)
+    run_all = not (args.search or args.bounds or args.lemma or args.lemma52 or args.lemma53)
 
     if run_all or args.bounds:
         print("=== Bound table (log10 scale) ===")
@@ -175,8 +238,18 @@ def main() -> None:
         run_pruned_search(k_max=args.k_max_search)
         print()
 
+    if run_all or args.lemma52:
+        print("=== Lemma 5.2: all-non-1-digits impossibility (min product vs 10^k) ===")
+        all_non1_lemma_table()
+        print()
+
+    if run_all or args.lemma53:
+        print("=== Lemma 5.3: maximum number of non-1 digits (product constraint) ===")
+        non1_count_bound_table()
+        print()
+
     if run_all or args.lemma:
-        print("=== One-non-1-digit lemma: ratio repunit_k / max_rhs ===")
+        print("=== Lemma 5.1: one-non-1-digit lemma: ratio repunit_k / max_rhs ===")
         one_non1_lemma_table()
         print()
 

@@ -20,13 +20,14 @@ n=S(n)+P(n).
 
 ## Main theorem
 
-The complete set of base-10 bipotentiant numbers in the range \(0\le n\le 10^{14}-1\)
-(all numbers with at most 14 digits) is
+The complete set of base-10 bipotentiant numbers in the range \(0\le n\le 10^{18}-1\)
+(all numbers with at most 18 digits) is
 \[
 \{0,\ 19,\ 24,\ 51,\ 1343,\ 1721\}.
 \]
 Moreover, a partial analytical argument (Lemma 5.1 below) rules out a large
-infinite family of candidate digit structures for every \(k\ge 28\).
+infinite family of candidate digit structures for every \(k\ge 28\); two further
+lemmas (5.2 and 5.3) sharpen the structure of surviving candidates.
 
 ## Structure of the proof
 
@@ -37,8 +38,10 @@ The argument proceeds in five steps.
 | 1 | \(n=0\) | Algebraic (trivial) |
 | 2 | \(n>0\), structural lemmas | Algebraic (no-zero-digit theorem, product bound) |
 | 3 | \(k=1\) | Algebraic |
-| 4 | \(k=2\dots 14\) | Computer-assisted pruned exhaustive search |
-| 5 | \(k\ge 28\), one-non-1-digit family | Analytical inequality |
+| 4 | \(k=2\dots 18\) | Computer-assisted pruned exhaustive search |
+| 5 | \(k\ge 6\), all digits \(\ge 2\) | Analytical inequality (Lemma 5.2) |
+| 6 | Any \(k\), \(m\) non-1 digits | Combinatorial upper bound on \(m\) (Lemma 5.3) |
+| 7 | \(k\ge 28\), one-non-1-digit family | Analytical inequality (Lemma 5.1) |
 
 ---
 
@@ -97,7 +100,7 @@ For \(k=1\), \(n=d_0\), \(S(n)=d_0\), \(P(n)=d_0\).
 The fixed-point equation \(n=S(n)+P(n)\) becomes \(d_0=2d_0\), which is impossible for
 \(d_0\ge 1\). Hence there are no one-digit bipotentiant numbers.
 
-### 4) Pruned exhaustive search for \(k=2\dots 14\)
+### 4) Pruned exhaustive search for \(k=2\dots 18\)
 
 For a \(k\)-digit digit tuple \((d_0,\dots,d_{k-1})\) with every \(d_j\in\{1,\dots,9\}\)
 (Lemma 2.2), the fixed-point equation \(n=S(n)+P(n)\) is checked directly. The search
@@ -105,7 +108,7 @@ tree is pruned the moment the running product \(\prod_{j\le j_0}d_j^{j+1}\) reac
 \(10^k\), since Lemma 2.3 guarantees no solution can survive.
 
 The implementation in `bound_analysis.py` (`find_bipotentiant_k_digits`) runs the
-search for every \(k\) from 2 to 14 and yields the following results (timings from a
+search for every \(k\) from 2 to 18 and yields the following results (timings from a
 single sequential run):
 
 | \(k\) | Solutions | Time (s) |
@@ -123,10 +126,14 @@ single sequential run):
 | 12 | — | 1.828 |
 | 13 | — | 4.204 |
 | 14 | — | 9.140 |
+| 15 | — | 15.579 |
+| 16 | — | 32.081 |
+| 17 | — | 64.155 |
+| 18 | — | 126.548 |
 
-Total wall-clock time for \(k=2\dots 14\): **≈ 16 seconds**.
+Total wall-clock time for \(k=2\dots 18\): **≈ 254 seconds**.
 The search is complete: every \(k\)-digit tuple satisfying the product constraint is
-tested. Therefore, in the range \(10\le n\le 10^{14}-1\), there are no bipotentiant
+tested. Therefore, in the range \(10\le n\le 10^{18}-1\), there are no bipotentiant
 numbers other than those listed in the main theorem.
 
 To reproduce:
@@ -135,7 +142,68 @@ To reproduce:
 python bound_analysis.py --search
 ```
 
-### 5) Partial analytical result for \(k\ge 28\): one-non-1-digit family
+### 5) All-digits-non-1 impossibility for \(k\ge 6\) (Lemma 5.2)
+
+**Lemma 5.2 (all-non-1-digit impossibility).** For \(k\ge 6\), no \(k\)-digit number
+whose digit sequence consists entirely of digits \(\ge 2\) can be bipotentiant.
+
+*Proof.* Suppose every \(d_j\ge 2\). Then
+\[
+P(n)=\prod_{j=0}^{k-1}d_j^{j+1}\ge\prod_{j=0}^{k-1}2^{j+1}=2^{\sum_{j=0}^{k-1}(j+1)}=2^{k(k+1)/2}.
+\]
+By Lemma 2.3, \(P(n)<10^k\), so \(2^{k(k+1)/2}<10^k\), i.e.
+\(\tfrac{k+1}{2}\log_{10}2<1\), i.e. \(k<2/\log_{10}2-1=2\log_2 10-1\approx 5.64\).
+Hence for \(k\ge 6\) the product constraint is violated, and no solution exists. \(\square\)
+
+| \(k\) | \(k(k+1)/2\) | \(\log_{10}(\min P)\) | \(\log_{10}(10^k)\) | Impossible? |
+|-------|-------------|----------------------|---------------------|-------------|
+| 4 | 10 | 3.010 | 4 | No |
+| 5 | 15 | 4.515 | 5 | No |
+| **6** | **21** | **6.321** | **6** | **Yes** |
+| 7 | 28 | 8.428 | 7 | Yes |
+| 8 | 36 | 10.836 | 8 | Yes |
+
+To verify:
+
+```python
+python bound_analysis.py --lemma52
+```
+
+### 6) Bound on the number of non-1 digits (Lemma 5.3)
+
+**Lemma 5.3 (non-1-digit count bound).** In any \(k\)-digit bipotentiant number the
+number of digits **not** equal to \(1\) is at most
+\[
+m_{\max}(k)=\left\lfloor\frac{-1+\sqrt{1+8k/\log_{10}2}}{2}\right\rfloor.
+\]
+In particular \(m_{\max}(k)=O\!\left(\sqrt{k}\right)\).
+
+*Proof.* Let \(m\) be the number of non-1 digits, located at positions
+\(j_1<j_2<\cdots<j_m\). The minimum product contribution is achieved when every
+non-1 digit equals 2 and is placed at the lowest available positions
+\(0,1,\ldots,m-1\):
+\[
+P(n)\ge\prod_{i=0}^{m-1}2^{i+1}=2^{m(m+1)/2}.
+\]
+The product constraint \(P(n)<10^k\) then forces
+\(\tfrac{m(m+1)}{2}\log_{10}2<k\), giving the stated bound on \(m\). \(\square\)
+
+| \(k\) | \(m_{\max}(k)\) |
+|-------|--------------|
+| 10 | 7 |
+| 15 | 9 |
+| 18 | 10 |
+| 20 | 11 |
+| 28 | 13 |
+| 30 | 13 |
+
+To verify:
+
+```python
+python bound_analysis.py --lemma53
+```
+
+### 7) Partial analytical result for \(k\ge 28\): one-non-1-digit family
 
 We can prove analytically that an infinite family of digit structures admits no
 solution for large enough \(k\).
@@ -191,17 +259,23 @@ exactly one non-1 digit exists for any \(k\ge 28\). \(\square\)
 |-------|--------|
 | \(n=0\) | Bipotentiant (proven, §1) |
 | \(k=1\) | No solution (proven, §3) |
-| \(k=2\dots 14\) | Complete set \{19,24,51,1343,1721\} (proven, §4) |
-| \(k=15\dots 27\) | No solution found; exhaustive proof pending faster implementation |
+| \(k=2\dots 18\) | Complete set \{19,24,51,1343,1721\} (proven, §4) |
+| \(k\ge 6\), all digits \(\ge 2\) | No solution (proven, Lemma 5.2) |
+| Any \(k\), \(m\) non-1 digits | \(m\le m_{\max}(k)=O(\sqrt{k})\) (proven, Lemma 5.3) |
+| \(k=19\dots 27\) | No solution found; exhaustive proof pending faster implementation |
 | \(k\ge 28\), one non-1 digit | No solution (proven, Lemma 5.1) |
 | \(k\ge 28\), multiple non-1 digits | Open (analytical tools in development) |
 
 The conjecture that \(\{0,19,24,51,1343,1721\}\) is the complete set of
 base-10 bipotentiant numbers is supported by:
 
-1. **Complete proof** for \(k\le 14\) (all integers up to \(10^{14}-1 \approx 10^{14}\)).
-2. **Partial analytical proof** excluding the one-non-1-digit family for \(k\ge 28\).
-3. **Exhaustive numerical scan** of all integers up to \(20{,}000{,}000\) via
+1. **Complete proof** for \(k\le 18\) (all integers up to \(10^{18}-1\approx 10^{18}\)).
+2. **Partial analytical proof** excluding:
+   - All-non-1-digit numbers for \(k\ge 6\) (Lemma 5.2).
+   - The one-non-1-digit family for \(k\ge 28\) (Lemma 5.1).
+3. **Structural bound** limiting any \(k\)-digit candidate to at most \(O(\sqrt{k})\)
+   non-1 digits (Lemma 5.3).
+4. **Exhaustive numerical scan** of all integers up to \(20{,}000{,}000\) via
    `is_bipotentiant`, confirming no additional solutions exist there.
 
 ```python
